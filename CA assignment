@@ -1,0 +1,107 @@
+1.
+def to_8bit_twos_complement(n):
+    """Convert a signed decimal number to 8-bit 2's complement."""
+    return format(n & 0xFF, '08b')
+
+
+def signed_value(binary):
+    """Convert 8-bit 2's complement binary to signed decimal."""
+    value = int(binary, 2)
+    if value >= 128:
+        value -= 256
+    return value
+
+
+def binary_addition(a, b):
+    # Convert operands to 8-bit binary
+    bin_a = to_8bit_twos_complement(a)
+    bin_b = to_8bit_twos_complement(b)
+
+    # Perform addition using 8-bit arithmetic
+    full_sum = int(bin_a, 2) + int(bin_b, 2)
+    result = format(full_sum & 0xFF, '08b')
+
+    # Check signed arithmetic overflow
+    overflow = (a >= 0 and b >= 0 and signed_value(result) < 0) or \
+               (a < 0 and b < 0 and signed_value(result) >= 0)
+
+    print(f"Operand A: {a:4d} = {bin_a}")
+    print(f"Operand B: {b:4d} = {bin_b}")
+    print(f"Addition : {bin_a} + {bin_b}")
+    print(f"Result   : {result}")
+    print(f"Decimal  : {signed_value(result)}")
+    print("Overflow :", "Yes" if overflow else "No")
+    print("-" * 45)
+
+
+print("a) (120) + (+62)")
+binary_addition(120, 62)
+
+print("b) (-120) + (-62)")
+binary_addition(-120, -62)
+Output:
+a) (120) + (+62)
+Operand A:  120 = 01111000
+Operand B:   62 = 00111110
+Addition : 01111000 + 00111110
+Result   : 10110110
+Decimal  : -74
+Overflow : Yes
+---------------------------------------------
+b) (-120) + (-62)
+Operand A: -120 = 10001000
+Operand B:  -62 = 11000010
+Addition : 10001000 + 11000010
+Result   : 01001010
+Decimal  : 74
+Overflow : Yes
+---------------------------------------------
+2.
+
+def logical_left_shift(binary, positions):
+    print(f"\nOriginal number: {binary}")
+    result = binary
+
+    for i in range(positions):
+        result = result[1:] + '0'
+        print(f"After left shift {i + 1}: {result}")
+
+    return result
+
+
+def logical_right_shift(binary, positions):
+    print(f"\nOriginal number: {binary}")
+    result = binary
+
+    for i in range(positions):
+        result = '0' + result[:-1]
+        print(f"After right shift {i + 1}: {result}")
+
+    return result
+
+
+# a) Logical left shift by 3 positions
+print("a) Logical Left Shift")
+left_result = logical_left_shift("10110110", 3)
+print("Final 8-bit result:", left_result)
+
+# b) Logical right shift by 3 positions
+print("\nb) Logical Right Shift")
+right_result = logical_right_shift("11010100", 3)
+print("Final 8-bit result:", right_result)
+Output:
+a) Logical Left Shift
+
+Original number: 10110110
+After left shift 1: 01101100
+After left shift 2: 11011000
+After left shift 3: 10110000
+Final 8-bit result: 10110000
+
+b) Logical Right Shift
+
+Original number: 11010100
+After right shift 1: 01101010
+After right shift 2: 00110101
+After right shift 3: 00011010
+Final 8-bit result: 00011010
